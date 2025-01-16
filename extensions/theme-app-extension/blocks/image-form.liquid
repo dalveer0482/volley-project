@@ -1,0 +1,178 @@
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+
+    .upload-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"], textarea, input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background: #45a049;
+    }
+
+    #imagePreview img {
+      display: block;
+      max-width: 100%;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 5px;
+      background: #f7f7f7;
+    }
+
+    .success {
+      color: #28a745;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .error {
+      color: #e74c3c;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
+
+
+<div class="upload-container">
+  <h2>Upload an Image</h2>
+
+  <!-- File input for selecting an image -->
+  <div class="form-group">
+    <label for="imageInput">Select Image:</label>
+    <input type="file" id="imageInput"  accept="image/*">
+  </div>
+
+  <!-- Title input -->
+  <div class="form-group">
+    <label for="title">Title:</label>
+    <input type="text"  id="title" placeholder="Enter title" required>
+  </div>
+
+  <!-- Description input -->
+  <div class="form-group">
+    <label for="description">Description:</label>
+    <textarea  id="description" rows="3" placeholder="Enter description" required></textarea>
+  </div>
+
+  <!-- Upload button -->
+  <button onclick="uploadImage()">Upload Image</button>
+
+  <!-- Display selected image preview -->
+  <div id="imagePreview"></div>
+
+  <!-- Status messages -->
+  <div id="statusMessage"></div>
+</div>
+
+<script>
+  // Get input elements
+  const imageInput = document.getElementById('imageInput');
+  const imagePreview = document.getElementById('imagePreview');
+  const statusMessage = document.getElementById('statusMessage');
+
+  // Function to handle image preview
+  imageInput.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Show preview of selected image
+        imagePreview.innerHTML = `<img src="${e.target.result}" alt="Image Preview">`;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  // Function to upload image with title and description
+  function uploadImage() {
+    const file = imageInput.files[0];
+    const title = document.getElementById('title').value.trim();
+    const description = document.getElementById('description').value.trim();
+
+    if (!file || !title || !description) {
+      alert('Please fill in all fields and select an image file.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('title', title);
+    formData.append('description', description);
+
+    // Upload image using fetch (AJAX)
+    fetch('https://guaranteed-lit-venues-groups.trycloudflare.com/api/upload', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        //if (data.filePath) {
+        //  statusMessage.innerHTML = `<p class="success">Upload successful!</p>`;
+        //} else {
+        //  statusMessage.innerHTML = `<p class="error">Upload failed: ${data.error || 'Unknown error'}</p>`;
+        //}
+      })
+      .catch(error => {
+        console.error('Error uploading image:', error);
+        statusMessage.innerHTML = `<p class="error">Error uploading image</p>`;
+      });
+  }
+</script>
+
+
+
+{% schema %}
+{
+  "name": "Image Form",
+  "target": "section",
+  "settings": [
+
+  ]
+}
+{% endschema %}

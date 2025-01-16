@@ -1,0 +1,72 @@
+<section class="hero-section" style="background: {{ block.settings.bg_color }};">
+    <div class="content" style="text-align: {{ block.settings.text_alignment }};">
+        <h2 style="color: {{ block.settings.heading_color }}; font-size: {{ block.settings.heading_size }}px;">
+            {% if block.settings.product != blank %}
+            {{ block.settings.product }}
+            {% else %}
+            Welcome to Your Next Adventure
+            {% endif %}
+        </h2>
+        <p style="color: {{ block.settings.paragraph_color }}; font-size: {{ block.settings.paragraph_size }}px;">
+            Discover amazing places and embark on unforgettable journeys with us. Let your wanderlust take the lead!
+        </p> <p>
+        <a href="{{block.settings.btnUrl}}" class="cta-button">{{block.settings.btnText}}</a></p>
+    </div>
+</section>
+
+{% style %}
+.hero-section {
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.hero-section .content {
+    max-width: 600px;
+}
+
+.cta-button {
+    text-decoration: none;
+    padding: 15px 30px;
+    background: white;
+    color: #2575fc;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button:hover {
+    background: #2575fc;
+    color: white;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+}
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Banner",
+  "target": "section",
+  "settings": [
+    { "type": "text", "id": "product", "label": "Product Heading" },
+    { "type": "color", "id": "bg_color", "label": "Background Color", "default": "#6a11cb" },
+    { "type": "color", "id": "heading_color", "label": "Heading Color", "default": "#ffffff" },
+    { "type": "range", "id": "heading_size", "label": "Heading Font Size (px)", "min": 20, "max": 100, "default": 40 },
+    { "type": "color", "id": "paragraph_color", "label": "Paragraph Color", "default": "#ffffff" },
+    { "type": "range", "id": "paragraph_size", "label": "Paragraph Font Size (px)", "min": 12, "max": 30, "default": 18 },
+    { "type": "select", "id": "text_alignment", "label": "Text Alignment", "options": [
+      { "value": "left", "label": "Left" },
+      { "value": "center", "label": "Center" },
+      { "value": "right", "label": "Right" }
+    ], "default": "center" },
+    { "type": "text", "id": "btnText", "label": "Button Label", "default": "Explore Now" },
+     { "type": "url", "id": "btnUrl", "label": "Button Link" }
+  ]
+}
+{% endschema %}

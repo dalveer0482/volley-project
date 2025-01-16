@@ -1,0 +1,184 @@
+<div class="contact-form-container">
+{%assign section = block %}
+  <form class="contact-form">
+    <h2>{{ section.settings.form_heading }}</h2>
+    <div class="form-group">
+      <label for="name">{{ section.settings.label_name }}</label>
+      <input type="text" id="name" name="name" placeholder="{{ section.settings.placeholder_name }}" required>
+    </div>
+    <div class="form-group">
+      <label for="email">{{ section.settings.label_email }}</label>
+      <input type="email" id="email" name="email" placeholder="{{ section.settings.placeholder_email }}" required>
+    </div>
+    <div class="form-group">
+      <label for="phone">{{ section.settings.label_phone }}</label>
+      <input type="tel" id="phone" name="phone" placeholder="{{ section.settings.placeholder_phone }}" required>
+    </div>
+    <div class="form-group">
+      <label for="subject">{{ section.settings.label_subject }}</label>
+      <input type="text" id="subject" name="subject" placeholder="{{ section.settings.placeholder_subject }}" required>
+    </div>
+    <div class="form-group">
+      <label for="message">{{ section.settings.label_message }}</label>
+      <textarea id="message" name="message" rows="5" placeholder="{{ section.settings.placeholder_message }}" required></textarea>
+    </div>
+    <button type="submit" class="submit-btn">Send Message</button>
+  </form>
+</div>
+
+
+    {% style %}
+.contact-form-container {
+  width: 100%;
+  max-width: 500px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.contact-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #007BFF;
+  outline: none;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 10px;
+  background: {{ section.settings.button_color }};
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: {{ section.settings.button_hover_color }};
+}
+{% endstyle %}
+
+
+{% schema %}
+{
+  "name": "New Form",
+  "target": "section",
+    "enabled_on": {
+      "templates": ["product"]
+    },
+    "stylesheet": "style.css",
+    "javascript": "custom.js",
+  "settings": [
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form Heading",
+      "default": "Contact Us"
+    },
+    {
+      "type": "text",
+      "id": "label_name",
+      "label": "Full Name Label",
+      "default": "Full Name"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_name",
+      "label": "Full Name Placeholder",
+      "default": "Your full name"
+    },
+    {
+      "type": "text",
+      "id": "label_email",
+      "label": "Email Label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_email",
+      "label": "Email Placeholder",
+      "default": "Your email address"
+    },
+    {
+      "type": "text",
+      "id": "label_phone",
+      "label": "Phone Number Label",
+      "default": "Phone Number"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_phone",
+      "label": "Phone Number Placeholder",
+      "default": "Your phone number"
+    },
+    {
+      "type": "text",
+      "id": "label_subject",
+      "label": "Subject Label",
+      "default": "Subject"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_subject",
+      "label": "Subject Placeholder",
+      "default": "Subject of your message"
+    },
+    {
+      "type": "text",
+      "id": "label_message",
+      "label": "Message Label",
+      "default": "Message"
+    },
+    {
+      "type": "text",
+      "id": "placeholder_message",
+      "label": "Message Placeholder",
+      "default": "Write your message here..."
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Button Background Color",
+      "default": "#007BFF"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Button Hover Color",
+      "default": "#0056b3"
+    }
+  ]
+}
+{% endschema %}
+
