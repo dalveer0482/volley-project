@@ -1,0 +1,28 @@
+{
+  "name": "testing",
+  "version": "1.0.0",
+  "main": "web/index.js",
+  "license": "UNLICENSED",
+  "type": "module",
+  "scripts": {
+    "shopify": "shopify",
+    "build": "shopify app build",
+    "dev": "shopify app dev",
+    "info": "shopify app info",
+    "generate": "shopify app generate",
+    "deploy": "shopify app deploy"
+  },
+  "dependencies": {
+    "@shopify/shopify-app-session-storage-mongodb": "^4.0.9",
+    "body-parser": "^1.20.3",
+    "express-promise-router": "^4.1.1",
+    "mongoose": "^8.9.3"
+  },
+  "author": "prologic",
+  "private": true,
+  "workspaces": [
+    "extensions/*",
+    "web",
+    "web/frontend"
+  ]
+}

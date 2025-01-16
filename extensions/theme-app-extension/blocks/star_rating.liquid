@@ -1,0 +1,226 @@
+{% style %}
+.dbody {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.dbody h1 {
+  color: #333;
+}
+.dbody form {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+.dbody form label {
+  font-weight: bold;
+  color: #555;
+}
+.dbody form input, .dbody form textarea, .dbody form button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+}
+.dbody form input:focus, .dbody form textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+.dbody form button {
+  background-color: #007bff;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+}
+.dbody form button:hover {
+  background-color: #0056b3;
+}
+.reviews-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+}
+.review-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 100%;
+  max-width: 300px;
+  text-align: left;
+  color: #333;
+}
+.review-card h3 {
+  margin: 0;
+  color: #007bff;
+}
+.review-card p {    word-wrap: break-word;
+  margin: 5px 0;
+  line-height: 1.5;
+}
+.review-card .rating {
+  font-size: 1.2rem;
+  color: #f39c12;
+}
+{% endstyle %}
+
+<div class="dbody">
+  <form id="reviewForm">
+    <input type="hidden" name="shopId" value="{{shop.permanent_domain}}" />
+    <input type="hidden" name="productID" value="{{product.id}}" />
+    <label for="reviewerName">Name:</label>
+    <input type="text" id="reviewerName" name="reviewerName" required />
+
+    <label for="reviewTitle">Review Title:</label>
+    <input type="text" id="reviewTitle" name="reviewTitle" required />
+
+    <label for="reviewText">Review:</label>
+    <textarea id="reviewText" name="reviewText" rows="4" required></textarea>
+
+    <label for="rating">Rating (1-5):</label>
+    <input type="number" id="rating" name="rating" min="1" max="5" required />
+
+    <button type="submit">Submit Review</button>
+  </form>
+
+  <div class="reviews-container" id="reviewsContainer">
+    <!-- Reviews will be displayed here -->
+  </div>
+</div>
+
+<script>
+var urls = "https://paraguay-lip-taxi-straight.trycloudflare.com";
+ document.addEventListener('DOMContentLoaded', async () => {
+    try {
+      // Fetch the reviews from the API
+      const response = await fetch(urls+'/api/getreviews?shopId={{shop.permanent_domain}}&productID={{product.id}}');
+
+      if (!response.ok) {
+        throw new Error('Failed to load reviews');
+      }
+
+      const result = await response.json();
+
+      // Ensure the reviews data is available
+      if (result.success && result.data && result.data.length > 0) {
+        const reviewsContainer = document.getElementById('reviewsContainer');
+
+        // Loop through each review in the response
+        result.data.forEach(review => {
+          // Create a new review card
+          const reviewCard = document.createElement('div');
+          reviewCard.classList.add('review-card');
+
+          // Set the content of the review card
+          reviewCard.innerHTML = `
+            <h3>${review.reviewTitle}</h3>
+            <p><strong>Reviewer:</strong> ${review.reviewerName}</p>
+            <p>${review.reviewText}</p>
+            <p class="rating">Rating: ${'⭐'.repeat(review.rating)}</p>
+            <p><small><strong>Shop:</strong> ${review.shopId}</small></p>
+            <p><small><strong>Product ID:</strong> ${review.productID}</small></p>
+          `;
+
+          // Append the review card to the container
+          reviewsContainer.appendChild(reviewCard);
+        });
+      } else {
+        const reviewsContainer = document.getElementById('reviewsContainer');
+        reviewsContainer.innerHTML = '<p>No reviews available for this product.</p>';
+      }
+    } catch (error) {
+      console.error('Error fetching reviews:', error);
+      const reviewsContainer = document.getElementById('reviewsContainer');
+      reviewsContainer.innerHTML = '<p>Error loading reviews. Please try again later.</p>';
+    }
+  });
+  document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Retrieve form values, including hidden fields
+    const shopId = document.querySelector('input[name="shopId"]').value;
+    const productID = document.querySelector('input[name="productID"]').value;
+    const reviewerName = document.getElementById('reviewerName').value;
+    const reviewTitle = document.getElementById('reviewTitle').value;
+    const reviewText = document.getElementById('reviewText').value;
+    const rating = document.getElementById('rating').value;
+
+    // Construct the review object
+    const reviewData = {
+      shopId,
+      productID,
+      reviewerName,
+      reviewTitle,
+      reviewText,
+      rating,
+    };
+
+    try {
+      // Make POST request to the API
+      const response = await fetch(urls+'/api/review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewData),
+      });
+
+      // Handle response
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server Error: ${errorText}`);
+      }
+
+      const result = await response.json();
+      alert(result.message);
+
+      // Dynamically add the new review to the reviews container
+      const reviewsContainer = document.getElementById('reviewsContainer');
+      const newReview = document.createElement('div');
+      newReview.classList.add('review-card');
+      newReview.innerHTML = `
+        <h3>${reviewTitle}</h3>
+        <p><strong>Reviewer:</strong> ${reviewerName}</p>
+        <p>${reviewText}</p>
+        <p class="rating">Rating: ${'⭐'.repeat(rating)}</p>
+        <p><small><strong>Shop:</strong> ${shopId}</small></p>
+        <p><small><strong>Product ID:</strong> ${productID}</small></p>
+      `;
+      reviewsContainer.prepend(newReview);
+
+      // Reset the form after successful submission
+      document.getElementById('reviewForm').reset();
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      alert('Failed to submit review. Please try again.');
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Star Rating",
+  "target": "section",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product", "autofill": true },
+    { "type": "color", "id": "colour", "label": "Star Colour", "default": "#ff0000" }
+  ]
+}
+{% endschema %}
